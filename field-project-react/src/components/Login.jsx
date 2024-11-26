@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebaseConfig';
+import { auth,db } from '../firebaseConfig';
+import { doc, getDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { Activity, Heart, Upload, Brain, Menu, X, Sparkles } from 'lucide-react';
 
-const Login = () => {
+const Login = (props) => {
   const {
     register,
     handleSubmit,
@@ -19,8 +20,20 @@ const Login = () => {
     setLoading(true);
     setLoginError('');
     try {
-      await signInWithEmailAndPassword(auth, data.email, data.password);
-      navigate('/dashboard');
+      const userCredential=await signInWithEmailAndPassword(auth, data.email, data.password);
+      const user = userCredential.user;
+      const userId = user.uid;
+
+      const userDocRef = doc(db, 'users', userId);
+      const userDocSnap = await getDoc(userDocRef);
+
+    if (userDocSnap.exists()) {
+      // Access all fields in the document
+      const userData = userDocSnap.data();
+      navigate('/dashboard',{ state: { name:userData.fullName, age: userData.age } });
+    } else {
+      console.log('No such document found!');
+    }
     } catch (error) {
       setLoginError('Invalid email or password. Please try again.');
     } finally {
