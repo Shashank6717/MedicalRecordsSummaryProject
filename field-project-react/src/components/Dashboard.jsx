@@ -218,6 +218,7 @@ import React, { useState } from 'react';
 import { Link,useLocation } from 'react-router-dom'; 
 import { useAuth } from './AuthContext'; // Import useAuth to access logout function
 import { Activity, FileText, Upload, Settings, ChartBar, Heart, Calendar, AlertCircle, LogOut } from 'lucide-react';
+import File from './File'
 
 const Dashboard = (props) => {
   const { user, logout } = useAuth();
@@ -226,9 +227,9 @@ const Dashboard = (props) => {
 
   // Example static data for the dashboard
   const [patientsData] = useState([
-    { name: 'John Doe', condition: 'Fever & Cold', date: '10/10/2024', status: 'Stable' }, 
-    { name: 'Jane Smith', condition: 'Diabetes Checkup', date: '09/09/2024', status: 'Review' }, 
-    { name: 'Mike Johnson', condition: 'Hypertension', date: '08/08/2024', status: 'Critical' }
+    { name: 'Annual Checkup', date: '10/10/2024', status: 'Completed' }, 
+    { name: 'Blood Test Results', date: '09/09/2024', status: 'Completed' }, 
+    { name: 'Vaccination Record', date: '08/08/2024', status: 'Completed' }
   ]);
 
   return (
@@ -314,8 +315,8 @@ const Dashboard = (props) => {
           <div className="bg-gradient-to-br from-pink-500 to-rose-500 p-6 rounded-2xl text-white shadow-lg">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-pink-100">Total Patients</p>
-                <h3 className="text-3xl font-bold mt-1">1,234</h3>
+                <p className="text-pink-100">Upcoming Appointments</p>
+                <h3 className="text-3xl font-bold mt-1">2</h3>
               </div>
               <span className="bg-white/20 p-2 rounded-lg">
                 <Heart className="w-6 h-6" />
@@ -325,8 +326,8 @@ const Dashboard = (props) => {
           <div className="bg-gradient-to-br from-blue-500 to-indigo-500 p-6 rounded-2xl text-white shadow-lg">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-blue-100">Appointments Today</p>
-                <h3 className="text-3xl font-bold mt-1">28</h3>
+                <p className="text-blue-100">Health Score</p>
+                <h3 className="text-3xl font-bold mt-1">92</h3>
               </div>
               <span className="bg-white/20 p-2 rounded-lg">
                 <Calendar className="w-6 h-6" />
@@ -336,8 +337,8 @@ const Dashboard = (props) => {
           <div className="bg-gradient-to-br from-emerald-500 to-teal-500 p-6 rounded-2xl text-white shadow-lg">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-emerald-100">Critical Cases</p>
-                <h3 className="text-3xl font-bold mt-1">5</h3>
+                <p className="text-emerald-100">Pending Actions</p>
+                <h3 className="text-3xl font-bold mt-1">3</h3>
               </div>
               <span className="bg-white/20 p-2 rounded-lg">
                 <AlertCircle className="w-6 h-6" />
@@ -354,7 +355,7 @@ const Dashboard = (props) => {
               <span className="p-2 bg-blue-100 rounded-lg">
                 <FileText className="w-5 h-5 text-blue-600" />
               </span>
-              <h3 className="text-xl font-semibold text-gray-800">Recent Patients</h3>
+              <h3 className="text-xl font-semibold text-gray-800">Recent Records</h3>
             </div>
             <div className="space-y-4">
               {patientsData.map((patient, index) => (
@@ -387,7 +388,7 @@ const Dashboard = (props) => {
               <span className="p-2 bg-purple-100 rounded-lg">
                 <ChartBar className="w-5 h-5 text-purple-600" />
               </span>
-              <h3 className="text-xl font-semibold text-gray-800">Analytics Overview</h3>
+              <h3 className="text-xl font-semibold text-gray-800">Health Analytics Overview</h3>
             </div>
             <div className="space-y-4">
               <div className="bg-gradient-to-r from-purple-500 to-indigo-500 p-4 rounded-xl text-white shadow-md">
@@ -408,9 +409,10 @@ const Dashboard = (props) => {
               </span>
               <h3 className="text-xl font-semibold text-gray-800">Upload New Records</h3>
             </div>
-            <button className="w-full mt-6 px-4 py-2 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-lg hover:from-green-700 hover:to-teal-700 transition duration-300 shadow-md">
+            {/* <button className="w-full mt-6 px-4 py-2 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-lg hover:from-green-700 hover:to-teal-700 transition duration-300 shadow-md">
               Upload New File
-            </button>
+            </button> */}
+            <File/>
           </div>
         </div>
       </div>
