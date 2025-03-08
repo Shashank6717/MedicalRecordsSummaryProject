@@ -1,7 +1,7 @@
 // PrivateRouter.js
-import React from 'react';
-import { Navigate } from 'react-router-dom';
-import { useAuth } from './AuthContext'; // Use the AuthContext
+import React from "react";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "./AuthContext"; // Use the AuthContext
 
 const PrivateRouter = ({ children }) => {
   const { user, loading } = useAuth(); // Get the user and loading state from context

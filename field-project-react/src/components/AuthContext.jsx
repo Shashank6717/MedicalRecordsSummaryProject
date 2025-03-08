@@ -1,36 +1,7 @@
-// import React, { createContext, useContext, useState, useEffect } from 'react';
-// import { auth } from '../firebaseConfig';  // Make sure to import firebase auth configuration
-// import { signOut } from 'firebase/auth';
-
-// const AuthContext = createContext();
-
-// export const AuthProvider = ({ children }) => {
-//   const [user, setUser] = useState(null);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     const unsubscribe = auth.onAuthStateChanged((user) => {
-//       setUser(user);
-//       setLoading(false);
-//     });
-
-//     return unsubscribe;
-//   }, []);
-
-//   const logout = () => {
-//     signOut(auth);
-//   };
-
-//   return (
-//     <AuthContext.Provider value={{ user, loading, logout }}>
-//       {children}
-//     </AuthContext.Provider>
-//   );
-// };
-
-// export const useAuth = () => useContext(AuthContext);
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { auth } from '../firebaseConfig'; // Import Firebase config
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { auth, db } from "../firebaseConfig";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 const AuthContext = createContext();
 
@@ -40,19 +11,51 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(setUser); // Listen to auth state changes
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setUser(user);
+      if (user) {
+        // Fetch user data from Firestore
+        try {
+          const userDocRef = doc(db, "users", user.uid);
+          const userDocSnap = await getDoc(userDocRef);
+          if (userDocSnap.exists()) {
+            setUserData(userDocSnap.data());
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      } else {
+        setUserData(null);
+      }
+      setLoading(false);
+    });
+
     return () => unsubscribe();
   }, []);
 
-  const logout = () => {
-    auth.signOut();
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      setUserData(null);
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
+
+  const value = {
+    user,
+    userData,
+    loading,
+    logout,
   };
 
   return (
-    <AuthContext.Provider value={{ user, logout }}>
-      {children}
+    <AuthContext.Provider value={value}>
+      {!loading && children}
     </AuthContext.Provider>
   );
 };
